@@ -1,7 +1,7 @@
 """
 Author: Aleksa Zatezalo
 Date: May 10th 2023
-Description: A Basic TCP Server in Python
+Description: A Basic TCP Server in Python.
 """
 
 import socket
