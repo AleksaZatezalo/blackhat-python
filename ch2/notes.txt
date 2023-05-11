@@ -1,0 +1,6 @@
+Chapter 2: Basic Networking Tools
+ - Covered basic networking
+ - Build TCP/UDP Sockets and Servers
+ - Made netcat in python3
+ - Made a TCP proxy
+ - Learned about SSH in python

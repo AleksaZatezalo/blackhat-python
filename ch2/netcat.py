@@ -1,6 +1,6 @@
 """
 Author: Aleksa Zatezalo
-Date: May 10th 2023
+Date: May 11th 2023
 Description: Netcat re-written in python.
 """
 
