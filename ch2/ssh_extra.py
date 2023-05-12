@@ -1,3 +1,9 @@
+"""
+Author: Aleksa Zatezalo
+Date: May 11th 2023
+Description: An implementation of SSH in python. Uses keys to authenticate.
+"""
+
 import os
 import paramiko
 import socket

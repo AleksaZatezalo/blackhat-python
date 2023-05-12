@@ -1,7 +1,7 @@
 """
 Author: Aleksa Zatezalo
 Date: May 11th 2023
-Description: An implementation of SSHin python.
+Description: An implementation of SSH in python.
 """
 
 import paramiko
