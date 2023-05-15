@@ -31,7 +31,7 @@ class IP:
 		self.dst_address = ipaddress.ip_address(self.dst)
 		
 		# map protocol constants to their names
-		self.protocol_map(1: "ICMP", 6: "TCP", 17: "UDP")
+		self.protocol_map({1: "ICMP", 6: "TCP", 17: "UDP"})
 		try:
 			self.protocol = self.protocol_map[self.protocol_num]
 		except Exception as e:
