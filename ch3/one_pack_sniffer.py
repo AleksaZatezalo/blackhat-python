@@ -21,14 +21,14 @@ class IP(Structure):
 		("version", c_ubyte, 4),
 		("ihcl", c_ubyte, 4),
 		("tos", c_ubyte, 8),
-	 	("len", c_ubyte, 16),
-		("id", c_ubyte, 16),
-		("offset", c_ubyte, 16),
+	 	("len", c_ushort, 16),
+		("id", c_ushort, 16),
+		("offset", c_ushort, 16),
 		("ttl", c_ubyte, 8),
 		("protocol_num", c_ubyte, 8),
-		("sum", c_ubyte, 16),
-		("src", c_ubyte, 32),
-		("dst", c_ubyte, 32),
+		("sum", c_ushort, 16),
+		("src", c_uint32, 32),
+		("dst", c_uint32, 32),
 	]
 
 	def __new__(cls, socket_buffer=None):
@@ -36,9 +36,9 @@ class IP(Structure):
 	
 	def __init__(self, socket_buffer=None):
 		#human readable IP addresses
-		self.src_address = socket.inet_ntoa(struct.poack("<L", self.src))
-		self.dst_address = socket.inet_ntoa(struct.poack("<L", self.dest))
-		
+		self.src_address = socket.inet_ntoa(struct.pack("<L", self.src))
+		self.dst_address = socket.inet_ntoa(struct.pack("<L", self.dst))
+
 def main():
     # create a raw socket, bin to public interface
 	if os.name == 'nt':
@@ -55,7 +55,9 @@ def main():
 		sniffer.iotcl(socket.SIO_RCVALL, socket.RCVALL_ON)
 
 	# read one packet
-	print(sniffer.recvfrom(65565))
+	ip = IP(sniffer.recvfrom(65565)[0])
+	print("SRC: " + ip.src_address)
+	print("DST: " + ip.dst_address)
 
 	# if we're on Windows, turn off promiscous mode
 	if os.name == 'nt':
