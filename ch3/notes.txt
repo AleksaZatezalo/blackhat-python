@@ -2,5 +2,3 @@ Chapter 3: Creating our first sniffer
  - Covered structure of TCP/UDP packets
  - Leanred bit manipulation
  - Created a sniffer in python
-
- Note - Code not compleated or tested, Sniffer already created in Medium article.
