@@ -1,7 +1,7 @@
 """
 Author: Aleksa Zatezalo
 Date: May 21th 2023
-Description: A sniffer written in python.
+Description: A sniffer written in python. Made to snif one packet.
 """
 
 from ctypes import *
