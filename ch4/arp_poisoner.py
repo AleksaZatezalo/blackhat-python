@@ -12,11 +12,21 @@ import sys
 import time
 
 def get_mac(target_ip):
-    pass
+    packet = Ether(dst='ff:ff:ff:ff:ff:ff')
+    resp, _ = srp(packet, timeout=2, retry=10, verbose=False)
+    for _, r in resp:
+        return r[Ether].src
+    return None
 
 class Arper:
     def __init__(self, victim, gateway, interface='en0'):
-        pass
+        self.victim = victim
+        self.victimmac = get_mac(victim)
+        self.gateway = gateway
+        self.gatewaymac = get_mac(gateway)
+        self.interface = interface
+        conf.iface = interface
+        conf.verb = 0
 
     def run(self):
         pass
