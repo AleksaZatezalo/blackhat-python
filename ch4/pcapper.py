@@ -17,7 +17,17 @@ PCAPS = '/root/Downloads'
 Response = collections.namedtupple('Response', ['header', 'payload'])
 
 def get_header(payload):
-    pass
+    try:
+        header_raw = payload[:payload.index(b'\r\n\r\n' + 2)]
+    except ValueError:
+        sys.stdout.write('-')
+        sys.stdout.flush()
+        return None
+    
+    header = dict(re.findall(r'(?P<name>.*?): (?P<value>.*?)\r\n', header_raw.decode()))
+    if 'Content-Type' not in header:
+        return None
+    return header
 
 def exctract_content(Response, content_name='image'):
     pass
