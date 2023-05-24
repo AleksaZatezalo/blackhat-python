@@ -4,7 +4,7 @@ Date: May 22th 2023
 Description: PCAP coded in python.
 """
 
-from scapy.all import TCP, rdpap
+from scapy.all import TCP, rdpcap
 import collections
 import os
 import re
@@ -43,14 +43,35 @@ def exctract_content(Response, content_name='image'):
     return content, content_type
 
 class Recapper:
-    def __init__(self):
-        pass
+    def __init__(self, fname):
+        pcap = rdpcap(fname)
+        self.sessions = pcap.sessions()
+        self.responses = list()
 
     def get_responses(self):
-        pass
+        for session in self.sessions:
+            payload = b''
+            for packet in self.sessions[session]:
+                try:
+                    if packet[TCP].dport == 80 or packet[TCP].sport == 80:
+                        payload += bytes(packet[TCP].payload)
+                except IndexError:
+                    sys.stdout.write('x')
+                    sys.stdout.flush()
+                if payload:
+                    header = get_header(payload)
+                    if header is None:
+                        continue
+                    self.responses.append(Response(header=header, payload=payload))
 
     def write(self, content_name):
-        pass
+        for i, response in enumerate(self.responses):
+            content, content_type = exctract_content(response, content_name)
+            if content and content_type:
+                fname = os.path.join(OUTDIR, f'ex_{i}.{content_type}')
+                print(f'Writing {fname}')
+                with open(fname, 'wb') as f:
+                    f.write(content)
 
 if __name__ == '__main__':
     pfile = os.path.join(PCAPS, 'pcap.pcap')
