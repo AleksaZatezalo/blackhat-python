@@ -1,7 +1,7 @@
 """
 Author: Aleksa Zatezalo
 Date: May 22th 2023
-Description: PCAP coded in python.
+Description: PCAP coded in python. Made to capture and save images traveling on a network.
 """
 
 from scapy.all import TCP, rdpcap
