@@ -1,0 +1,4 @@
+Chapter 6: Extending Burpsuite
+- Learned Jython
+- Learned Burpsuite API
+- Made Plugin
