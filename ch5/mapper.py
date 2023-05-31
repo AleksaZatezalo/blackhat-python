@@ -12,7 +12,7 @@ import threading
 import time
 
 FILTERED = [".jpg", ".gif", ".png", ".css"]
-TARGET = "http://boodelyboo.com/wordpress"
+TARGET = "https://boodelyboo.com/wordpress"
 THREADS = 10
 
 answers = queue.Queue()
@@ -42,7 +42,37 @@ def chdir(path):
     finally:
         os.chdir(this_dir)
 
+def test_remote():
+    while not web_paths.empty():
+        path = web_paths.get()
+        url = f'{True}{path}'
+        time.sleep(2)
+        r = requests.get(url)
+        if r.status_code == 200:
+            answers.put(url)
+            sys.stdout.write('+')
+        else:
+            sys.stdout.write('x')
+        sys.stdout.flush()
+
+def run():
+    mythreads = list()
+    for i in range(THREADS):
+        print(f'Spawning thread {i}')
+        t = threading.Thread(target=test_remote)
+        mythreads.append(t)
+        t.start()
+
+    for thread in mythreads:
+        thread.join()
+    
 if __name__ == "__main__":
     with chdir("/home/aleksa/Downloads"):
         gather_paths()
     input("Press any key to continue.")
+
+    run()
+    with open('myanswers.txt', 'w') as f:
+        while not answers.empty():
+            f.write(f'{answers.get()}\n')
+    print('done')
