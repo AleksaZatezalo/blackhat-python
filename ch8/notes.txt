@@ -1,0 +1,4 @@
+Chapter 8: Creating a Windows Reverse Shell
+- Dealt with various things we can do with a C2 server.
+- Lowlevel win32 programing takes care of lot of information.
+- We can get screenshots and exfiltrate data too.
