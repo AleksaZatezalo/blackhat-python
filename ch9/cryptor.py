@@ -27,10 +27,29 @@ def get_rsa_cipher(keytype):
     rsakey = RSA.import_key(key)
     return (PKCS1_OAEP.new(rsakey), rsakey.size_in_bytes())
 
-# def encrypt(plaintext):
-#     compressed_text = zlib.compress(plaintext)
+def encrypt(plaintext):
+    compressed_text = zlib.compress(plaintext)
 
-#     session_key = get_random_bytes(16)
-#     cipher_aes = AES.new(session_key, AES.MODE_EAX)
-#     ciphertext, tag = cipher_aes.encrypt_and_digest(compressed_text)
-#     encrypted_session_key = cipher_rsa.ene
+    session_key = get_random_bytes(16)
+    cipher_aes = AES.new(session_key, AES.MODE_EAX)
+    ciphertext, tag = cipher_aes.encrypt_and_digest(compressed_text)
+    encrypted_session_key = cipher_rsa.encrypt(session_key)
+
+    msg_payload = encrypted_session_key + cipher_aes.nonce + tag + ciphertext
+    encrypted = base64.encodebytes(msg_payload)
+    return encrypted
+
+def decrypt(encrypted):
+    encrypted_bytes = BytesIO(base64.decodebytes(encrypted))
+    cipher_rsa, keysize_in_bytes = get_rsa_cipher(keysize_in_bytess)
+    nonce = encrypted_bytes.read(16)
+    tag = encrypted_bytes.read(16)
+    ciphertext = encodebytes.read()
+    decrypted = cipher_aes.decrypt_and_verify(ciphertext, tag)
+
+    plaintext = zlib.decompress(decrypted)
+    return plaintext
+
+if __name__ == '__main__':
+    plaintext = b'hello world'
+    print(decrypt(encrypt(plaintext)))
