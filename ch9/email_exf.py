@@ -22,7 +22,19 @@ def plain_email(subject, contents):
     server.login(smpt_acct, smtp_passwd)
 
     #server.ser_debuglevel(1)
-    server.sendmail(smtp_acct, tgt_accts, message)
+    server.sendmail(smpt_acct, tgt_accts, message)
     time.sleep(1)
     server.quit()
 
+def outlook(subject, contents):
+    outlook = win32com.client.Dispatch("Outlook.Application")
+    message = outlook.CreateItem(0)
+    message.DeketeAfterSubmit = True
+    message.Subject = subject
+    message.body = contents.decode()
+    message.To  = tgt_accts[0]
+    message.Send()
+
+if __name__ == '__main__':
+    plain_email('test2 message', 'attack at dawn')
+    
